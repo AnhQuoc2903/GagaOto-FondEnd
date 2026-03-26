@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Drawer, Descriptions, Tag, Table, Timeline } from "antd";
+import { formatVND } from "../../utils/format";
 
 interface WorkOrderDetailDrawerProps {
   open: boolean;
@@ -65,6 +66,7 @@ export default function WorkOrderDetailDrawer({
             {workOrder.deadline ? (
               <span>
                 {new Date(workOrder.deadline).toLocaleString()}
+
                 {new Date(workOrder.deadline) < new Date() && (
                   <Tag color="red" style={{ marginLeft: 8 }}>
                     Overdue
@@ -84,13 +86,15 @@ export default function WorkOrderDetailDrawer({
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item label="Labor Cost">
-            ${workOrder.laborCost?.toFixed(2) || "0.00"}
+            {formatVND(workOrder.laborCost || 0)}
           </Descriptions.Item>
+
           <Descriptions.Item label="Parts Total">
-            ${workOrder.partsTotal?.toFixed(2) || "0.00"}
+            {formatVND(workOrder.partsTotal || 0)}
           </Descriptions.Item>
+
           <Descriptions.Item label="Total Cost">
-            <strong>${workOrder.total?.toFixed(2) || "0.00"}</strong>
+            <strong>{formatVND(workOrder.total || 0)}</strong>
           </Descriptions.Item>
         </Descriptions>
 
@@ -114,12 +118,14 @@ export default function WorkOrderDetailDrawer({
                 {
                   title: "Unit Price",
                   render: (_, record: any) =>
-                    `$${record.inventory?.price?.toFixed(2) || "0.00"}`,
+                    formatVND(record.inventory?.price || 0),
                 },
                 {
                   title: "Subtotal",
                   render: (_, record: any) =>
-                    `$${((record.inventory?.price || 0) * record.quantity).toFixed(2)}`,
+                    formatVND(
+                      (record.inventory?.price || 0) * (record.quantity || 0),
+                    ),
                 },
               ]}
             />

@@ -11,6 +11,7 @@ import VehiclePage from "./pages/vehicles/VehiclePage";
 import UserPage from "./pages/users/UserPage";
 import WorkOrderPage from "./pages/work-orders/WorkOrderPage";
 import DashboardPage from "./pages/reports/DashboardPage";
+import QuotationPage from "./pages/quotation/QuotationPage";
 
 const PrivateRoute = ({ children }: any) => {
   const token = localStorage.getItem("token");
@@ -43,6 +44,7 @@ function App() {
           <Route path="vehicles" element={<VehiclePage />} />
           <Route path="users" element={<UserPage />} />
           <Route path="work-orders" element={<WorkOrderPage />} />
+          <Route path="quotations" element={<QuotationPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

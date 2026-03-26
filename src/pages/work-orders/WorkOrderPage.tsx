@@ -12,6 +12,7 @@ import {
   removePartFromWorkOrder,
   exportInvoice,
 } from "../../api/workOrder.api";
+import { formatVND } from "../../utils/format";
 
 import { getCustomers } from "../../api/customer.api";
 import { getVehicles } from "../../api/vehicle.api";
@@ -391,6 +392,7 @@ export default function WorkOrderPage() {
           {
             title: "Parts",
             dataIndex: "partsTotal",
+            render: (value) => formatVND(value || 0),
             onCell: () => ({
               onClick: handleInteractiveClick,
             }),
@@ -398,6 +400,7 @@ export default function WorkOrderPage() {
           {
             title: "Labor",
             dataIndex: "laborCost",
+            render: (value) => formatVND(value || 0),
             onCell: () => ({
               onClick: handleInteractiveClick,
             }),
@@ -405,6 +408,7 @@ export default function WorkOrderPage() {
           {
             title: "Total",
             dataIndex: "total",
+            render: (value) => formatVND(value || 0),
             onCell: () => ({
               onClick: handleInteractiveClick,
             }),

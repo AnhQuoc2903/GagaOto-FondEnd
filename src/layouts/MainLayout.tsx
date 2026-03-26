@@ -61,6 +61,9 @@ export default function MainLayout() {
           <Menu.Item key="/work-orders" icon={<ToolOutlined />}>
             <Link to="/work-orders">Work Orders</Link>
           </Menu.Item>
+          <Menu.Item key="/quotations" icon={<FileTextOutlined />}>
+            <Link to="/quotations">Quotations</Link>
+          </Menu.Item>
 
           {/* ADMIN ZONE */}
           {user?.role === "ADMIN" && (
