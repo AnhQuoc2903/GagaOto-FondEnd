@@ -12,6 +12,7 @@ import UserPage from "./pages/users/UserPage";
 import WorkOrderPage from "./pages/work-orders/WorkOrderPage";
 import DashboardPage from "./pages/reports/DashboardPage";
 import QuotationPage from "./pages/quotation/QuotationPage";
+import ReminderPage from "./pages/reminderPage/ReminderPage";
 
 const PrivateRoute = ({ children }: any) => {
   const token = localStorage.getItem("token");
@@ -45,6 +46,7 @@ function App() {
           <Route path="users" element={<UserPage />} />
           <Route path="work-orders" element={<WorkOrderPage />} />
           <Route path="quotations" element={<QuotationPage />} />
+          <Route path="/reminders" element={<ReminderPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

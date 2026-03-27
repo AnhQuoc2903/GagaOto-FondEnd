@@ -37,3 +37,5 @@ export const exportInvoice = (id: string) =>
   axios.get(`/work-orders/${id}/invoice`, {
     responseType: "blob",
   });
+
+export const getWorkOrderById = (id: string) => axios.get(`/work-orders/${id}`);

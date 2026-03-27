@@ -87,7 +87,6 @@ export default function WorkOrderPage() {
   const loadInventory = async () => {
     const res = await getInventory();
     setInventories(res.data.data);
-    console.log("inventories:", res.data.data);
   };
 
   useEffect(() => {

@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Drawer, Descriptions, Tag, Table, Timeline } from "antd";
+import { Drawer, Descriptions, Tag, Table, Timeline, message } from "antd";
+import { useEffect, useState } from "react";
 import { formatVND } from "../../utils/format";
+import PaymentSection from "../../components/payment/paymentSection";
+import { getWorkOrderById } from "../../api/workOrder.api";
 
 interface WorkOrderDetailDrawerProps {
   open: boolean;
@@ -33,7 +36,25 @@ export default function WorkOrderDetailDrawer({
   onClose,
   workOrder,
 }: WorkOrderDetailDrawerProps) {
-  if (!workOrder) return null;
+  const [order, setOrder] = useState<any>(workOrder);
+
+  // 👉 reload work order từ server
+  const loadWorkOrder = async () => {
+    try {
+      if (!order?._id) return;
+
+      const res = await getWorkOrderById(order._id);
+      setOrder(res.data);
+    } catch {
+      message.error("Load work order failed");
+    }
+  };
+
+  useEffect(() => {
+    setOrder(workOrder);
+  }, [workOrder]);
+
+  if (!order) return null;
 
   return (
     <Drawer
@@ -44,30 +65,35 @@ export default function WorkOrderDetailDrawer({
       open={open}
     >
       <div>
+        {/* ================= INFO ================= */}
         <Descriptions column={1} bordered>
           <Descriptions.Item label="Customer">
-            {workOrder.customer?.name || "-"}
+            {order.customer?.name || "-"}
           </Descriptions.Item>
+
           <Descriptions.Item label="Phone">
-            {workOrder.customer?.phone || "-"}
+            {order.customer?.phone || "-"}
           </Descriptions.Item>
+
           <Descriptions.Item label="Vehicle">
-            {workOrder.vehicle?.plate || "-"} - {workOrder.vehicle?.model || ""}
+            {order.vehicle?.plate || "-"} - {order.vehicle?.model || ""}
           </Descriptions.Item>
+
           <Descriptions.Item label="Description">
-            {workOrder.description || "-"}
+            {order.description || "-"}
           </Descriptions.Item>
+
           <Descriptions.Item label="Priority">
-            <Tag color={getPriorityColor(workOrder.priority)}>
-              {workOrder.priority || "MEDIUM"}
+            <Tag color={getPriorityColor(order.priority)}>
+              {order.priority || "MEDIUM"}
             </Tag>
           </Descriptions.Item>
-          <Descriptions.Item label="Deadline">
-            {workOrder.deadline ? (
-              <span>
-                {new Date(workOrder.deadline).toLocaleString()}
 
-                {new Date(workOrder.deadline) < new Date() && (
+          <Descriptions.Item label="Deadline">
+            {order.deadline ? (
+              <span>
+                {new Date(order.deadline).toLocaleString()}
+                {new Date(order.deadline) < new Date() && (
                   <Tag color="red" style={{ marginLeft: 8 }}>
                     Overdue
                   </Tag>
@@ -77,32 +103,35 @@ export default function WorkOrderDetailDrawer({
               "-"
             )}
           </Descriptions.Item>
+
           <Descriptions.Item label="Technician">
-            {workOrder.technician?.name || "Not assigned"}
+            {order.technician?.name || "Not assigned"}
           </Descriptions.Item>
+
           <Descriptions.Item label="Status">
-            <Tag color={getStatusColor(workOrder.status)}>
-              {workOrder.status}
-            </Tag>
+            <Tag color={getStatusColor(order.status)}>{order.status}</Tag>
           </Descriptions.Item>
+
           <Descriptions.Item label="Labor Cost">
-            {formatVND(workOrder.laborCost || 0)}
+            {formatVND(order.laborCost || 0)}
           </Descriptions.Item>
 
           <Descriptions.Item label="Parts Total">
-            {formatVND(workOrder.partsTotal || 0)}
+            {formatVND(order.partsTotal || 0)}
           </Descriptions.Item>
 
           <Descriptions.Item label="Total Cost">
-            <strong>{formatVND(workOrder.total || 0)}</strong>
+            <strong>{formatVND(order.total || 0)}</strong>
           </Descriptions.Item>
         </Descriptions>
 
+        {/* ================= PARTS ================= */}
         <div style={{ marginTop: 24 }}>
           <h3 style={{ marginBottom: 16 }}>Used Parts</h3>
-          {workOrder.usedParts?.length > 0 ? (
+
+          {order.usedParts?.length > 0 ? (
             <Table
-              dataSource={workOrder.usedParts}
+              dataSource={order.usedParts}
               rowKey="_id"
               pagination={false}
               size="small"
@@ -130,38 +159,39 @@ export default function WorkOrderDetailDrawer({
               ]}
             />
           ) : (
-            <p style={{ color: "#999", fontStyle: "italic" }}>No parts used</p>
+            <p style={{ color: "#999" }}>No parts used</p>
           )}
         </div>
 
+        {/* ================= HISTORY ================= */}
         <div style={{ marginTop: 24 }}>
           <h3 style={{ marginBottom: 16 }}>History Timeline</h3>
-          {workOrder.history?.length > 0 ? (
+
+          {order.history?.length > 0 ? (
             <Timeline>
-              {workOrder.history.map((h: any, index: number) => (
+              {order.history.map((h: any, index: number) => (
                 <Timeline.Item key={index}>
                   <div>
                     <strong>{h.action}</strong>
-                    <div style={{ fontSize: 12, color: "#888" }}>
+                    <div style={{ fontSize: 12 }}>
                       By: {h.user?.name || "System"}
                     </div>
-                    <div style={{ fontSize: 12, color: "#888" }}>
-                      Time: {new Date(h.time).toLocaleString()}
+                    <div style={{ fontSize: 12 }}>
+                      {new Date(h.time).toLocaleString()}
                     </div>
-                    {h.details && (
-                      <div style={{ fontSize: 12, marginTop: 4 }}>
-                        Details: {h.details}
-                      </div>
-                    )}
+                    {h.details && <div>Details: {h.details}</div>}
                   </div>
                 </Timeline.Item>
               ))}
             </Timeline>
           ) : (
-            <p style={{ color: "#999", fontStyle: "italic" }}>
-              No history available
-            </p>
+            <p style={{ color: "#999" }}>No history</p>
           )}
+        </div>
+
+        {/* ================= PAYMENT (🔥 QUAN TRỌNG) ================= */}
+        <div style={{ marginTop: 24 }}>
+          <PaymentSection order={order} reload={loadWorkOrder} />
         </div>
       </div>
     </Drawer>

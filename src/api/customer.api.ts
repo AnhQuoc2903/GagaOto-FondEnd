@@ -17,3 +17,6 @@ export const updateCustomer = (id: string, data: any) =>
   axios.put(`/customers/${id}`, data);
 
 export const deleteCustomer = (id: string) => axios.delete(`/customers/${id}`);
+
+export const getCustomerDebt = (id: string) =>
+  axios.get(`/customers/${id}/debt`);

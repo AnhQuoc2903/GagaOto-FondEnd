@@ -8,6 +8,7 @@ import {
   InboxOutlined,
   WarningOutlined,
   FileTextOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 
@@ -63,6 +64,9 @@ export default function MainLayout() {
           </Menu.Item>
           <Menu.Item key="/quotations" icon={<FileTextOutlined />}>
             <Link to="/quotations">Quotations</Link>
+          </Menu.Item>
+          <Menu.Item key="/reminders" icon={<BellOutlined />}>
+            <Link to="/reminders">Reminders</Link>
           </Menu.Item>
 
           {/* ADMIN ZONE */}
